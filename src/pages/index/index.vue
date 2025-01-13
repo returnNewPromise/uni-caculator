@@ -1,0 +1,132 @@
+<template>
+  <view
+    :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }"
+    class="bg-black h-screen box-border flex flex-col justify-end"
+  >
+    <view class="text-7xl font-bold ml-auto pr-7 box-border text-white">{{
+      disPlayValue
+    }}</view>
+    <!-- keyboard -->
+    <view class="flex flex-col gap-4 p-4">
+      <!-- 行 -->
+      <view v-for="(colume, index) in KeyBoard" :key="index">
+        <!-- 列 -->
+        <caculator-row
+          :colume="colume"
+          @onTap="(value: string) => setCaculateValue(value)"
+        />
+      </view>
+    </view>
+  </view>
+</template>
+
+<script lang="ts" setup>
+import { computed, ref } from "vue";
+import caculatorRow from "@/components/caculatorRow.vue";
+const KeyBoard = [
+  ["AC", "⁺/₋", "%", "÷"],
+  ["7", "8", "9", "×"],
+  ["4", "5", "6", "-"],
+  ["1", "2", "3", "+"],
+  ["0", ".", "="],
+];
+const caculateOpt = ["÷", "×", "-", "=", "+"];
+
+const { safeAreaInsets } = uni.getSystemInfoSync();
+const disPlayValue = ref<string>("0");
+const optEnable = computed(() =>
+  isNaN(Number(disPlayValue.value[disPlayValue.value.length - 1]))
+);
+const decimalEnable = computed(() => {
+  //判断是否允许添加decimal
+  const boolenArr = disPlayValue.value.split(/[\+\-\*\/]/).map((item) => {
+    return item.includes(".");
+  });
+  //判断最后一个字符是否为NaN
+  const lastChar = Number(disPlayValue.value[disPlayValue.value.length - 1]);
+  return !boolenArr[boolenArr.length - 1] && !isNaN(lastChar);
+});
+function setCaculateValue(value: string) {
+  switch (value) {
+    case "=":
+      // disPlayValue.value = eval(disPlayValue.value);
+      //todos:表达式求值
+      // Array.prototype.forEach;
+      break;
+    case "+":
+      if (!optEnable) {
+        break;
+      }
+      if (disPlayValue.value[disPlayValue.value.length - 1] === value) {
+        break;
+      }
+      if (isNaN(Number(disPlayValue.value[disPlayValue.value.length - 1]))) {
+        disPlayValue.value = disPlayValue.value.slice(0, -1) + value;
+        break;
+      }
+      disPlayValue.value = disPlayValue.value + value;
+      break;
+    case "-":
+      if (!optEnable) {
+        break;
+      }
+      if (disPlayValue.value[disPlayValue.value.length - 1] === value) {
+        break;
+      }
+      if (isNaN(Number(disPlayValue.value[disPlayValue.value.length - 1]))) {
+        disPlayValue.value = disPlayValue.value.slice(0, -1) + value;
+        break;
+      }
+      disPlayValue.value = disPlayValue.value + value;
+      break;
+    case "÷":
+      if (!optEnable) {
+        break;
+      }
+      if (disPlayValue.value[disPlayValue.value.length - 1] === value) {
+        break;
+      }
+      if (isNaN(Number(disPlayValue.value[disPlayValue.value.length - 1]))) {
+        disPlayValue.value = disPlayValue.value.slice(0, -1) + value;
+        break;
+      }
+      disPlayValue.value = disPlayValue.value + value;
+      break;
+    case "×":
+      if (!optEnable) {
+        break;
+      }
+      if (disPlayValue.value[disPlayValue.value.length - 1] === value) {
+        break;
+      }
+      //替换表达式最后一个字符
+      if (isNaN(Number(disPlayValue.value[disPlayValue.value.length - 1]))) {
+        disPlayValue.value = disPlayValue.value.slice(0, -1) + value;
+        break;
+      }
+      disPlayValue.value = disPlayValue.value + value;
+      break;
+    case "AC":
+      disPlayValue.value = "0";
+      break;
+    case ".":
+      if (decimalEnable.value) {
+        disPlayValue.value = disPlayValue.value + value;
+      }
+      break;
+    default:
+      if (disPlayValue.value === "0") {
+        disPlayValue.value = value;
+        break;
+      }
+      disPlayValue.value = disPlayValue.value + value;
+      break;
+  }
+}
+</script>
+
+<style>
+.h1 {
+  background-color: rgb(38, 38, 38);
+}
+</style>
