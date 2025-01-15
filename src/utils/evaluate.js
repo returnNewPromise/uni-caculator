@@ -1,4 +1,5 @@
 function infixToPostfix(infixExpression) {
+  console.log(infixExpression);
   const stack = []; // 运算符栈
   const output = []; // 后缀表达式
   const precedence = { "+": 1, "-": 1, "*": 2, "/": 2, "(": 0 }; // 运算符优先级
@@ -65,9 +66,10 @@ function areNumbersEqual(current, roundNum) {
 }
 export default function expressionEval(expression) {
   const result = evaluatePostfix(
+    //todo:fix negative nums operation return Nam
     infixToPostfix(
       expression
-        .match(/[\d.]+|[+\-*/]/g)
+        .match(/[-?\d.]+|[+\-*/]/g)
         .filter(
           (item) => item !== undefined && item !== "" && !item.startsWith(".")
         )
@@ -77,5 +79,6 @@ export default function expressionEval(expression) {
     ? result.toFixed(4)
     : result;
   //parseFloat自动去除多余的0
-  return parseFloat(fixNumber);
+  // console.log(fixNumber);
+  return parseFloat(fixNumber).toString();
 }

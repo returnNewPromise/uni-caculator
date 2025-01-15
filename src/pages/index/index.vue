@@ -3,9 +3,7 @@
     :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }"
     class="bg-black h-screen box-border flex flex-col justify-end"
   >
-    <view class="text-7xl font-bold ml-auto pr-7 box-border text-white">{{
-      disPlayValue
-    }}</view>
+    <caculator-display :displayValue="disPlayValue" />
     <!-- keyboard -->
     <view class="flex flex-col gap-4 p-4">
       <!-- 行 -->
@@ -24,13 +22,19 @@
 import { computed, ref } from "vue";
 import caculatorRow from "@/components/caculatorRow.vue";
 import expressionEval from "@/utils/evaluate";
-const KeyBoard = [
-  ["AC", "⁺/₋", "%", "÷"],
+import caculatorDisplay from "@/components/caculatorDisplay.vue";
+const isShowAc = computed(() => {
+  console.log(disPlayValue.value === "0");
+  return false;
+});
+
+const KeyBoard = ref([
+  [isShowAc ? "AC" : "C", "⁺/₋", "%", "÷"],
   ["7", "8", "9", "×"],
   ["4", "5", "6", "-"],
   ["1", "2", "3", "+"],
   ["0", ".", "="],
-];
+]);
 const { safeAreaInsets } = uni.getSystemInfoSync();
 const disPlayValue = ref<string>("0");
 const optEnable = computed(() =>
@@ -55,7 +59,7 @@ function setCaculateValue(value: string) {
         disPlayValue.value = result;
       } catch (error) {
         console.log(error);
-        disPlayValue.value = "表达式错误";
+        disPlayValue.value = "expression error";
       }
       break;
     case "⁺/₋":
