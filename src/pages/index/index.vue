@@ -59,6 +59,8 @@ function setCaculateValue(value: string) {
       }
       break;
     case "⁺/₋":
+      disPlayValue.value = (Number(disPlayValue.value) * -1).toString();
+
       break;
     case "%":
       disPlayValue.value = (Number(disPlayValue.value) / 100).toString();
