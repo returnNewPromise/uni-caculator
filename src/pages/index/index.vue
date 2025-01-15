@@ -23,6 +23,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import caculatorRow from "@/components/caculatorRow.vue";
+import expressionEval from "@/utils/evaluate";
 const KeyBoard = [
   ["AC", "⁺/₋", "%", "÷"],
   ["7", "8", "9", "×"],
@@ -30,8 +31,6 @@ const KeyBoard = [
   ["1", "2", "3", "+"],
   ["0", ".", "="],
 ];
-const caculateOpt = ["÷", "×", "-", "=", "+"];
-
 const { safeAreaInsets } = uni.getSystemInfoSync();
 const disPlayValue = ref<string>("0");
 const optEnable = computed(() =>
@@ -49,9 +48,20 @@ const decimalEnable = computed(() => {
 function setCaculateValue(value: string) {
   switch (value) {
     case "=":
-      // disPlayValue.value = eval(disPlayValue.value);
-      //todos:表达式求值
-      // Array.prototype.forEach;
+      try {
+        const result = expressionEval(
+          disPlayValue.value.replace("×", "*").replace("÷", "/")
+        );
+        disPlayValue.value = result;
+      } catch (error) {
+        console.log(error);
+        disPlayValue.value = "表达式错误";
+      }
+      break;
+    case "⁺/₋":
+      break;
+    case "%":
+      disPlayValue.value = (Number(disPlayValue.value) / 100).toString();
       break;
     case "+":
       if (!optEnable) {
@@ -125,8 +135,4 @@ function setCaculateValue(value: string) {
 }
 </script>
 
-<style>
-.h1 {
-  background-color: rgb(38, 38, 38);
-}
-</style>
+
