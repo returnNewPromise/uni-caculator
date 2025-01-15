@@ -28,14 +28,14 @@ function getKeysBgColor(key: string) {
   if (caculateOpt.includes(key)) {
     return "251,142,15";
   }
-  const functionOpt = ["AC", "⁺/₋", "%"];
+  const functionOpt = ["AC", "⁺/₋", "%", "C"];
   if (functionOpt.includes(key)) {
     return "148,148,148";
   }
   return "38,38,38";
 }
 function getKeysColor(key: string) {
-  const functionOpt = ["AC", "⁺/₋", "%"];
+  const functionOpt = ["AC", "⁺/₋", "%", "C"];
   if (functionOpt.includes(key)) {
     return "#000";
   }

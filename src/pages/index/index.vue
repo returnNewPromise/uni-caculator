@@ -19,17 +19,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import caculatorRow from "@/components/caculatorRow.vue";
 import expressionEval from "@/utils/evaluate";
 import caculatorDisplay from "@/components/caculatorDisplay.vue";
-const isShowAc = computed(() => {
-  console.log(disPlayValue.value === "0");
-  return false;
-});
 
 const KeyBoard = ref([
-  [isShowAc ? "AC" : "C", "⁺/₋", "%", "÷"],
+  ["AC", "⁺/₋", "%", "÷"],
   ["7", "8", "9", "×"],
   ["4", "5", "6", "-"],
   ["1", "2", "3", "+"],
@@ -48,6 +44,13 @@ const decimalEnable = computed(() => {
   //判断最后一个字符是否为NaN
   const lastChar = Number(disPlayValue.value[disPlayValue.value.length - 1]);
   return !boolenArr[boolenArr.length - 1] && !isNaN(lastChar);
+});
+watch(disPlayValue, () => {
+  if (disPlayValue.value !== "0") {
+    KeyBoard.value[0][0] = "C";
+  } else {
+    KeyBoard.value[0][0] = "AC";
+  }
 });
 function setCaculateValue(value: string) {
   switch (value) {
@@ -112,10 +115,11 @@ function setCaculateValue(value: string) {
       if (!optEnable) {
         break;
       }
+      //无法连续输入运算符
       if (disPlayValue.value[disPlayValue.value.length - 1] === value) {
         break;
       }
-      //替换表达式最后一个字符
+      //替换表达式最后一个运算符
       if (isNaN(Number(disPlayValue.value[disPlayValue.value.length - 1]))) {
         disPlayValue.value = disPlayValue.value.slice(0, -1) + value;
         break;
@@ -123,6 +127,9 @@ function setCaculateValue(value: string) {
       disPlayValue.value = disPlayValue.value + value;
       break;
     case "AC":
+      disPlayValue.value = "0";
+      break;
+    case "C":
       disPlayValue.value = "0";
       break;
     case ".":
