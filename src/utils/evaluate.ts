@@ -1,4 +1,4 @@
-function infixToPostfix(infixExpression) {
+function infixToPostfix(infixExpression: string[]): string {
   console.log(infixExpression);
   const stack = []; // 运算符栈
   const output = []; // 后缀表达式
@@ -35,13 +35,9 @@ function infixToPostfix(infixExpression) {
   }
   return output;
 }
-/**
- *
- * @param {String[]} expression
- * @returns
- */
-function evaluatePostfix(expression) {
-  const stack = [];
+
+function evaluatePostfix(expression: string): string {
+  const stack: string[] = [];
   const operators = {
     "+": (a, b) => a + b,
     "-": (a, b) => a - b,
@@ -61,18 +57,27 @@ function evaluatePostfix(expression) {
   }
   return stack.pop();
 }
+
 function areNumbersEqual(current, roundNum) {
   return Math.abs(current - roundNum) < Number.EPSILON * 10;
 }
-export default function expressionEval(expression) {
+
+export default function expressionEval(expression: string) {
   const result = evaluatePostfix(
-    //todo:fix negative nums operation return Nam
+    //fix: negative nums operation return Nam
+    //在减法前添加+号解决
+    //fix  / * 运算符只能被匹配一次
     infixToPostfix(
       expression
-        .match(/[-?\d.]+|[+\-*/]/g)
-        .filter(
-          (item) => item !== undefined && item !== "" && !item.startsWith(".")
-        )
+        .replaceAll("-", "+-")
+        .split(/([+/*])/)
+        .filter((item, index) => {
+          //删除开头的"+"
+          if (item === "+" && index === 1) {
+            return false;
+          }
+          return item !== undefined && item !== "" && !item.startsWith(".");
+        })
     )
   );
   const fixNumber = areNumbersEqual(result, Number(result).toFixed(4))

@@ -1,9 +1,12 @@
 <template>
   <view
     :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }"
-    class="bg-black h-screen box-border flex flex-col justify-end"
+    class="bg-black h-screen box-border flex flex-col justify-end font-sans"
   >
-    <caculator-display :displayValue="disPlayValue" />
+    <caculator-display
+      @touchDelete="onBackSpace"
+      :displayValue="disPlayValue"
+    />
     <!-- keyboard -->
     <view class="flex flex-col gap-4 p-4">
       <!-- 行 -->
@@ -38,13 +41,26 @@ const optEnable = computed(() =>
 );
 const decimalEnable = computed(() => {
   //判断是否允许添加decimal
-  const boolenArr = disPlayValue.value.split(/[\+\-\*\/]/).map((item) => {
+  const boolenArr = disPlayValue.value.split(/[\+\-×÷\/]/).map((item) => {
     return item.includes(".");
   });
   //判断最后一个字符是否为NaN
   const lastChar = Number(disPlayValue.value[disPlayValue.value.length - 1]);
   return !boolenArr[boolenArr.length - 1] && !isNaN(lastChar);
 });
+//滑动退格
+function onBackSpace() {
+  if (disPlayValue.value.length === 1) {
+    disPlayValue.value = "0";
+  }
+  if (disPlayValue.value === "0") {
+    return;
+  }
+  disPlayValue.value = disPlayValue.value.slice(
+    0,
+    disPlayValue.value.length - 1
+  );
+}
 watch(disPlayValue, () => {
   if (disPlayValue.value !== "0") {
     KeyBoard.value[0][0] = "C";
@@ -52,12 +68,12 @@ watch(disPlayValue, () => {
     KeyBoard.value[0][0] = "AC";
   }
 });
-function setCaculateValue(value: string) {
+function setCaculateValue(value: string): void {
   switch (value) {
     case "=":
       try {
         const result = expressionEval(
-          disPlayValue.value.replace("×", "*").replace("÷", "/")
+          disPlayValue.value.replaceAll("×", "*").replaceAll("÷", "/")
         );
         disPlayValue.value = result;
       } catch (error) {

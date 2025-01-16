@@ -3,7 +3,7 @@
     <button
       @tap="() => onKeyTap(row)"
       :class="row === '0' ? 'justify-start w-40 pl-10' : 'justify-center'"
-      class="flex items-center size-20 rounded-full text-4xl font-bold box-border text-white"
+      class="flex items-center size-20 h-20 rounded-full overflow-clip box-border p-0 text-white"
       v-for="row in colume"
       :key="row"
       :style="{
@@ -11,7 +11,7 @@
         color: `${getKeysColor(row)}`,
       }"
     >
-      {{ row }}
+      <text class="overflow-hidden text-3xl">{{ row }}</text>
     </button>
   </view>
 </template>
