@@ -71,12 +71,15 @@ export default function expressionEval(expression: string) {
       expression
         .replaceAll("-", "+-")
         .split(/([+/*])/)
+        .filter((item) => {
+          return item !== undefined && item !== "" && !item.startsWith(".");
+        })
         .filter((item, index) => {
-          //删除开头的"+"
-          if (item === "+" && index === 1) {
+          console.log(item);
+          if (item === "+" && index === 0) {
             return false;
           }
-          return item !== undefined && item !== "" && !item.startsWith(".");
+          return true;
         })
     )
   );
